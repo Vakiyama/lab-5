@@ -1,13 +1,13 @@
-import express from "express";
+import express from 'express';
 const router = express.Router();
-import { ensureAuthenticated } from "../middleware/checkAuth";
+import { ensureAuthenticated } from '../middleware/checkAuth';
 
-router.get("/", (req, res) => {
-  res.send("welcome");
+router.get('/', (_, res) => {
+  res.send('<a href="/auth/login">login</a>');
 });
 
-router.get("/dashboard", ensureAuthenticated, (req, res) => {
-  res.render("dashboard", {
+router.get('/dashboard', ensureAuthenticated, (req, res) => {
+  res.render('dashboard', {
     user: req.user,
   });
 });

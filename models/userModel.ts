@@ -22,6 +22,7 @@ const database = [
     id: 3,
     name: 'Jonathan Chen',
     email: 'jonathan123@gmail.com',
+
     password: 'jonathan123!',
   },
 ];
@@ -32,7 +33,7 @@ const userModel = {
     if (user) {
       return user;
     }
-    throw new Error(`Couldn't find user with email: ${email}`);
+    return null;
   },
   findById: (id: number) => {
     const user = database.find((user) => user.id === id);

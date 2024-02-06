@@ -1,15 +1,17 @@
-import {userModel} from "../models/userModel";
+import { userModel } from '../models/userModel';
+
 
 const getUserByEmailIdAndPassword = (email: string, password: string) => {
   let user = userModel.findOne(email);
   if (user) {
-    if (isUserValid(user, password)) {
+    if (isPasswordValid(user, password)) {
       return user;
     }
+    return "Password is invalid.";
   }
-  return null;
+  return "Email not found.";
 };
-const getUserById = (id:any) => {
+const getUserById = (id: any) => {
   let user = userModel.findById(id);
   if (user) {
     return user;
@@ -17,11 +19,8 @@ const getUserById = (id:any) => {
   return null;
 };
 
-function isUserValid(user: any, password: string) {
+function isPasswordValid(user: any, password: string) {
   return user.password === password;
 }
 
-export {
-  getUserByEmailIdAndPassword,
-  getUserById,
-};
+export { getUserByEmailIdAndPassword, getUserById };

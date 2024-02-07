@@ -3,10 +3,16 @@ import { PassportStrategy } from '../../interfaces/index';
 import { type Request } from 'express';
 import { VerifyCallback } from 'passport-oauth2';
 
+const clientID = process.env.GITHUB_CLIENT_ID;
+const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+
+if (clientID === undefined || clientSecret === undefined)
+  throw new Error('Missing env variables clientID or clientSecret');
+
 const githubStrategy: GitHubStrategy = new GitHubStrategy(
   {
-    clientID: '',
-    clientSecret: '',
+    clientID,
+    clientSecret,
     callbackURL: '',
     passReqToCallback: true,
   },

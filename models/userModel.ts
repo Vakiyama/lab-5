@@ -1,11 +1,21 @@
-export type UserModel = {
+export type IUser = {
   id: number;
   name: string;
-  email: string;
-  password: string;
 };
 
-const database = [
+type LocalUser = {
+  email: string;
+  password?: string;
+} & IUser;
+
+type GithubUser = {
+  email: string;
+  password?: never;
+} & IUser;
+
+export type UserModel = GithubUser | LocalUser;
+
+const database: UserModel[] = [
   {
     id: 1,
     name: 'Jimmy Smith',
@@ -40,7 +50,13 @@ const userModel = {
     if (user) {
       return user;
     }
-    throw new Error(`Couldn't find user with id: ${id}`);
+    return null;
+  },
+  create: (user: UserModel) => { },
+  findOrCreate: (id: number) => {
+    const user = userModel.findById(id);
+    if (user) return user;
+    // create
   },
 };
 

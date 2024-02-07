@@ -1,5 +1,5 @@
 import passport from 'passport';
-import { type UserModel } from '../../models/userModel';
+import { type IUser } from '../../models/userModel';
 import { Strategy as LocalStrategy } from 'passport-local';
 import {
   getUserByEmailIdAndPassword,
@@ -22,12 +22,6 @@ const localStrategy = new LocalStrategy(
   }
 );
 
-// add to types.d.ts
-declare global {
-  namespace Express {
-    interface User extends UserModel { }
-  }
-}
 
 passport.serializeUser((user: Express.User, done) => {
   done(null, user.id);

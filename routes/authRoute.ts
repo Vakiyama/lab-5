@@ -9,14 +9,15 @@ router.get('/login', forwardAuthenticated, (req, res) => {
   res.render('login', { message: message ? message : '' });
 });
 
-router.post(
-  '/login',
-  passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/auth/login',
-    failureMessage: true,
-  })
-);
+const passportConfig = {
+  successRedirect: '/dashboard',
+  failureRedirect: '/auth/login',
+  failureMessage: true,
+};
+
+router.post('/login', passport.authenticate('local', passportConfig));
+
+router.get('/github/callback', passport.authenticate('github', passportConfig));
 
 router.get('/logout', (req, res) => {
   req.logout((err) => {

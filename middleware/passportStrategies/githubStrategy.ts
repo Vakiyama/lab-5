@@ -28,7 +28,10 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy(
   ) => {
     const user = database.findById(profile.id);
     if (user) return done(null, user);
-    const newGithubUser = new GithubUser(profile.id, profile.displayName);
+    const newGithubUser = new GithubUser(
+      parseInt(profile.id),
+      profile.displayName
+    );
     database.addUser(newGithubUser);
     return done(null, newGithubUser);
   }

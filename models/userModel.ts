@@ -93,6 +93,7 @@ class Database {
 
   addUser(user: User) {
     this._users.push(user);
+    console.log(this._users);
   }
 }
 

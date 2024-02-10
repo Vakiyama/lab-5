@@ -11,6 +11,16 @@ export const ensureAuthenticated = (
   res.redirect('/auth/login');
 };
 
+export const ensureAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.isAuthenticated()) return res.redirect('auth/login');
+  if (req.user.role === 'admin') return next();
+  res.sendStatus(404);
+};
+
 export const forwardAuthenticated = (
   req: Request,
   res: Response,

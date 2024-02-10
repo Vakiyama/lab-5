@@ -1,7 +1,7 @@
 import express, { Request } from 'express';
 const router = express.Router();
 import { promisify } from 'util';
-import { ensureAuthenticated } from '../middleware/checkAuth';
+import { ensureAdmin, ensureAuthenticated } from '../middleware/checkAuth';
 
 router.get('/', (_, res) => {
   res.send('<a href="/auth/login">login</a>');
@@ -10,6 +10,7 @@ router.get('/', (_, res) => {
 router.get('/dashboard', ensureAuthenticated, async (req, res) => {
   res.render('dashboard', {
     user: req.user,
+    sessions: null,
   });
 });
 
@@ -23,9 +24,19 @@ async function getAllSessions(req: Request) {
   });
 }
 
-router.get('/admin', ensureAuthenticated, async (req, res) => {
-  if (req.user?.role === 'user') res.sendStatus(404);
-  console.log(await getAllSessions(req));
+async function destroySession(sessionID: string, req: Request) {
+  return new Promise<void>((resolve, reject) => {
+    if (req.sessionStore.destroy === undefined)
+      return reject('no session store');
+    console.log(sessionID);
+    req.sessionStore.destroy(sessionID, (err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
+
+router.get('/admin', ensureAdmin, async (req, res) => {
   res.render('dashboard', {
     user: req.user,
     sessions: await getAllSessions(req),
@@ -33,16 +44,15 @@ router.get('/admin', ensureAuthenticated, async (req, res) => {
 });
 
 router.post(
-  '/dashboard/session/delete/:sessionID',
+  '/admin/revoke/:sessionID',
   ensureAuthenticated,
   async (req, res) => {
     const sessionID = req.params.sessionID;
-    if (req.sessionStore.destroy === undefined)
-      throw new Error('no session store');
     try {
-      await promisify(req.sessionStore.destroy)(sessionID);
-      res.redirect('/dashboard');
+      await destroySession(sessionID, req);
+      res.redirect('/admin');
     } catch (e) {
+      console.log(e);
       res.send('sessionID does not exist');
     }
   }
